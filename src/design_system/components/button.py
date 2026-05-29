@@ -1,7 +1,21 @@
+"""
+Button Component for Flet.
+
+Provides the DesignButton class, which wraps a Flet Container and builds a highly
+reusable, state-aware button responding dynamically to hover and active states.
+"""
+
 import flet as ft
 from design_system.tokens.manager import tokens
 
 class DesignButton(ft.Container):
+    """
+    State-aware, token-driven Custom Button component.
+
+    Extends ft.Container to implement rich design system behaviors (hover background transitions,
+    border curves, active outline states, and support for contextual icon integration).
+    """
+
     def __init__(
         self,
         text: str,
@@ -14,6 +28,20 @@ class DesignButton(ft.Container):
         height: int = 40,
         **kwargs
     ):
+        """
+        Initializes a DesignButton component.
+
+        Args:
+            text (str): Inner button label string.
+            on_click (function): Callback handler triggered on click.
+            variant (str, optional): Semantic theme style (e.g., 'primary', 'secondary',
+                'outline', 'text', 'success', 'warning', 'danger'). Defaults to 'primary'.
+            dark (bool, optional): Theme mode state. Defaults to False.
+            disabled (bool, optional): Initial disabled state flag. Defaults to False.
+            icon (ft.IconData, optional): Icon enum to display next to the label. Defaults to None.
+            width (int, optional): Hardcoded button width. Defaults to None (fluid).
+            height (int, optional): Vertical button height. Defaults to 40.
+        """
         self.text_val = text
         self.click_handler = on_click
         self.variant = variant
@@ -68,6 +96,9 @@ class DesignButton(ft.Container):
         )
 
     def _set_colors(self):
+        """
+        Internal utility mapping button tokens based on the current theme and variant.
+        """
         # Default states
         self.border_style = None
         
@@ -109,6 +140,9 @@ class DesignButton(ft.Container):
             self.fg_color = tokens.get_color_primitive("white")
 
     def _handle_hover(self, e):
+        """
+        Internal event handler managing hover color transitions dynamically.
+        """
         if e.data == "true":
             self.bgcolor = self.hover_bg_color
             if self.variant == "outline":
@@ -120,10 +154,19 @@ class DesignButton(ft.Container):
         self.update()
 
     def _handle_click(self, e):
+        """
+        Internal click callback forwarder.
+        """
         if self.click_handler:
             self.click_handler(e)
             
     def set_disabled(self, disabled: bool):
+        """
+        Updates the button disabled state, opacity, and event handlers.
+
+        Args:
+            disabled (bool): Desired disabled state value.
+        """
         self.is_disabled = disabled
         self.opacity = 0.6 if disabled else 1.0
         self.on_click = self._handle_click if not disabled else None
