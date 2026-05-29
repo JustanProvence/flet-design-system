@@ -1,7 +1,21 @@
+"""
+TextField Component for Flet.
+
+Provides the DesignTextField class wrapping Flet's TextField and establishing
+consistent styling for labels, borders, errors, and custom prefix/suffix icons.
+"""
+
 import flet as ft
 from design_system.tokens.manager import tokens
 
 class DesignTextField(ft.TextField):
+    """
+    Token-driven Custom TextField Component.
+
+    Extends ft.TextField to resolve input border colors, active focus colors,
+    placeholder hints, and label typographies dynamically.
+    """
+
     def __init__(
         self,
         label: str = None,
@@ -16,6 +30,26 @@ class DesignTextField(ft.TextField):
         on_submit = None,
         **kwargs
     ):
+        """
+        Initializes a DesignTextField component.
+
+        Args:
+            label (str, optional): Floating label text. Defaults to None.
+            hint_text (str, optional): Input placeholder hint text. Defaults to None.
+            dark (bool, optional): Theme mode state flag. Defaults to False.
+            is_password (bool, optional): Mask input values as password text.
+                Defaults to False.
+            can_reveal_password (bool, optional): Expose eye icon to show password.
+                Defaults to False.
+            error_text (str, optional): Red-accented error message to display beneath input.
+                Defaults to None.
+            prefix_icon (ft.IconData, optional): Icon enum to render at start of field.
+                Defaults to None.
+            suffix_icon (ft.IconData, optional): Icon enum to render at end of field.
+                Defaults to None.
+            on_change (function, optional): Value changed callback handler. Defaults to None.
+            on_submit (function, optional): Field submitted/enter key handler. Defaults to None.
+        """
         self.dark = dark
         
         # Resolve theme colors

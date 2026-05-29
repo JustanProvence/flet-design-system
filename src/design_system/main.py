@@ -1,3 +1,10 @@
+"""
+Main entry point and documentation application for the Flet Design System.
+
+Defines and launches a highly interactive Flet web application that acts as a
+reusable component sandbox, design token visualizer, and documentation hub.
+"""
+
 import flet as ft
 from design_system.tokens.manager import tokens
 from design_system.components.typography import (

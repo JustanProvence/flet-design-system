@@ -1,3 +1,10 @@
+"""
+Unit tests for Flet Token-Driven Design System.
+
+Verifies the state and loading of the TokenManager class, color resolution layer,
+spacing scale limits, and custom UI components instantiation.
+"""
+
 import pytest
 import flet as ft
 from design_system.tokens.manager import TokenManager

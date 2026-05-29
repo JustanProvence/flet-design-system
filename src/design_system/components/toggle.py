@@ -1,7 +1,21 @@
+"""
+Toggle and Selection Components for Flet.
+
+Provides the DesignSwitch and DesignCheckbox classes, establishing standardized
+colors and text styles for toggle controls.
+"""
+
 import flet as ft
 from design_system.tokens.manager import tokens
 
 class DesignSwitch(ft.Switch):
+    """
+    Token-driven Custom Switch Component.
+
+    Extends ft.Switch to map active/inactive track and thumb colors
+    to central design system parameters automatically.
+    """
+
     def __init__(
         self,
         label: str = None,
@@ -10,6 +24,15 @@ class DesignSwitch(ft.Switch):
         on_change = None,
         **kwargs
     ):
+        """
+        Initializes a DesignSwitch component.
+
+        Args:
+            label (str, optional): Accompanying text label. Defaults to None.
+            value (bool, optional): Initial switch state. Defaults to False.
+            dark (bool, optional): Theme mode state flag. Defaults to False.
+            on_change (function, optional): State change callback handler. Defaults to None.
+        """
         self.dark = dark
         
         # Color resolution
@@ -37,6 +60,12 @@ class DesignSwitch(ft.Switch):
 
 
 class DesignCheckbox(ft.Checkbox):
+    """
+    Token-driven Custom Checkbox Component.
+
+    Extends ft.Checkbox to map borders and active fill state colors.
+    """
+
     def __init__(
         self,
         label: str = None,
@@ -45,6 +74,15 @@ class DesignCheckbox(ft.Checkbox):
         on_change = None,
         **kwargs
     ):
+        """
+        Initializes a DesignCheckbox component.
+
+        Args:
+            label (str, optional): Accompanying text label. Defaults to None.
+            value (bool, optional): Initial checkbox selected state. Defaults to False.
+            dark (bool, optional): Theme mode state flag. Defaults to False.
+            on_change (function, optional): State change callback handler. Defaults to None.
+        """
         self.dark = dark
         
         active_color = tokens.get_color("primary", self.dark)
