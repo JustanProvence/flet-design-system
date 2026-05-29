@@ -21,6 +21,28 @@ try:
 except ImportError:
     pass
 
+def generate_gemini_content(prompt_content: str) -> str:
+    """
+    Synchronous helper querying Gemini with automatic model fallbacks.
+    Tries multiple standard model IDs to prevent 404 API version errors.
+    """
+    models_to_try = [
+        "gemini-2.5-flash",
+        "gemini-1.5-flash-latest",
+        "gemini-1.5-flash",
+        "gemini-pro"
+    ]
+    last_ex = None
+    for model_name in models_to_try:
+        try:
+            model = genai.GenerativeModel(model_name)
+            response = model.generate_content(prompt_content)
+            return response.text
+        except Exception as e:
+            last_ex = e
+            continue
+    raise last_ex
+
 # Setup bot intents
 intents = discord.Intents.default()
 intents.message_content = True
@@ -93,8 +115,6 @@ async def on_message(message):
             try:
                 # Configure and query Gemini
                 genai.configure(api_key=gemini_key)
-                # We use gemini-1.5-flash as the highly compatible, lightning-fast default
-                model = genai.GenerativeModel("gemini-1.5-flash")
                 
                 # Context injection to make the AI sound like the Flet Design System assistant
                 system_instruction = (
@@ -105,15 +125,14 @@ async def on_message(message):
                 )
                 
                 # Run the synchronous API call in an executor thread to prevent blocking
-                response = await bot.loop.run_in_executor(
+                reply_text = await bot.loop.run_in_executor(
                     None, 
-                    lambda: model.generate_content(
+                    lambda: generate_gemini_content(
                         f"System Context: {system_instruction}\n\nUser: {prompt}"
                     )
                 )
                 
                 # Discord has a 2000 character limit per message
-                reply_text = response.text
                 if len(reply_text) > 1950:
                     reply_text = reply_text[:1950] + "... (truncated due to Discord limits)"
                     
@@ -356,8 +375,6 @@ async def remote_agent_command(ctx, *, task: str = None):
 
     # Configure Gemini
     genai.configure(api_key=gemini_key)
-    # We use gemini-1.5-flash as the highly compatible, lightning-fast default
-    model = genai.GenerativeModel("gemini-1.5-flash")
     
     agent_instruction = (
         "You are 'opencode', a highly intelligent AI coding agent with remote access "
@@ -384,12 +401,11 @@ async def remote_agent_command(ctx, *, task: str = None):
     # Loop max steps
     max_steps = 10
     for step in range(max_steps):
-        # Query model
-        response = await bot.loop.run_in_executor(
+        # Query model with automatic fallbacks
+        model_output = await bot.loop.run_in_executor(
             None,
-            lambda: model.generate_content(history)
+            lambda: generate_gemini_content(history)
         )
-        model_output = response.text
         
         # Check for tool tags
         read_match = re.search(r"<read_file>(.*?)</read_file>", model_output, re.DOTALL)
