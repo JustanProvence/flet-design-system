@@ -8,6 +8,7 @@ packages = [{include = "design_system", from = "src"}]
 [tool.poetry.dependencies]
 python = "^3.10"
 flet = "^0.23"
+pillow = "^12.2.0"
 
 [tool.poetry.group.dev.dependencies]
 pytest = "^8.0"
