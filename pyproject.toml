@@ -1,0 +1,23 @@
+[tool.poetry]
+name = "flet-design-system"
+version = "0.1.0"
+description = "A comprehensive, token-driven Design System built with Flet and Python"
+authors = ["OpenCode <prov@opencode.dev>"]
+packages = [{include = "design_system", from = "src"}]
+
+[tool.poetry.dependencies]
+python = "^3.10"
+flet = "^0.23"
+
+[tool.poetry.group.dev.dependencies]
+pytest = "^8.0"
+
+[tool.pytest.ini_options]
+pythonpath = ["src"]
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.poetry.scripts]
+design-system = "design_system.main:main"

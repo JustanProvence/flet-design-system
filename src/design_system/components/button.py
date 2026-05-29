@@ -1,0 +1,131 @@
+import flet as ft
+from design_system.tokens.manager import tokens
+
+class DesignButton(ft.Container):
+    def __init__(
+        self,
+        text: str,
+        on_click,
+        variant: str = "primary",  # primary, secondary, outline, text, success, warning, danger
+        dark: bool = False,
+        disabled: bool = False,
+        icon: ft.IconData = None,
+        width: int = None,
+        height: int = 40,
+        **kwargs
+    ):
+        self.text_val = text
+        self.click_handler = on_click
+        self.variant = variant
+        self.dark = dark
+        self.is_disabled = disabled
+        self.icon_data = icon
+        self.btn_width = width
+        self.btn_height = height
+        
+        # Configure colors based on variant and dark mode
+        self._set_colors()
+        
+        # Setup content (Row with text and optional icon)
+        content_items = []
+        if self.icon_data:
+            content_items.append(
+                ft.Icon(
+                    name=self.icon_data,
+                    color=self.fg_color,
+                    size=16
+                )
+            )
+        content_items.append(
+            ft.Text(
+                value=self.text_val,
+                color=self.fg_color,
+                size=tokens.get_font_size("sm"),
+                weight=tokens.get_font_weight("semibold"),
+                font_family=tokens.get_font_family("body")
+            )
+        )
+        
+        super().__init__(
+            content=ft.Row(
+                content_items,
+                alignment=ft.MainAxisAlignment.CENTER,
+                spacing=tokens.get_spacing("sm"),
+                vertical_alignment=ft.CrossAxisAlignment.CENTER
+            ),
+            width=self.btn_width,
+            height=self.btn_height,
+            bgcolor=self.bg_color,
+            border=self.border_style,
+            border_radius=tokens.get_radius("md"),
+            padding=ft.padding.symmetric(horizontal=tokens.get_spacing("lg")),
+            alignment=ft.alignment.center,
+            on_click=self._handle_click if not self.is_disabled else None,
+            on_hover=self._handle_hover if not self.is_disabled else None,
+            animate=ft.animation.Animation(200, ft.AnimationCurve.EASE_OUT_QUAD),
+            opacity=0.6 if self.is_disabled else 1.0,
+            **kwargs
+        )
+
+    def _set_colors(self):
+        # Default states
+        self.border_style = None
+        
+        if self.variant == "primary":
+            self.bg_color = tokens.get_color("primary", self.dark)
+            self.hover_bg_color = tokens.get_color("primary-hover", self.dark)
+            self.fg_color = tokens.get_color("text-on-primary", self.dark)
+            
+        elif self.variant == "secondary":
+            self.bg_color = tokens.get_color("surface-variant", self.dark)
+            # Hover is slightly darker/lighter depending on mode
+            self.hover_bg_color = tokens.get_color("border", self.dark)
+            self.fg_color = tokens.get_color("text-primary", self.dark)
+            
+        elif self.variant == "outline":
+            self.bg_color = "transparent"
+            self.hover_bg_color = tokens.get_color("surface-variant", self.dark)
+            self.fg_color = tokens.get_color("primary", self.dark)
+            self.border_style = ft.border.all(1, tokens.get_color("border", self.dark))
+            
+        elif self.variant == "text":
+            self.bg_color = "transparent"
+            self.hover_bg_color = tokens.get_color("surface-variant", self.dark)
+            self.fg_color = tokens.get_color("primary", self.dark)
+            
+        elif self.variant == "success":
+            self.bg_color = tokens.get_color("success", self.dark)
+            self.hover_bg_color = tokens.get_color_primitive("emerald-500") if self.dark else tokens.get_color_primitive("emerald-600")
+            self.fg_color = tokens.get_color_primitive("white")
+            
+        elif self.variant == "warning":
+            self.bg_color = tokens.get_color("warning", self.dark)
+            self.hover_bg_color = tokens.get_color_primitive("amber-500") if self.dark else tokens.get_color_primitive("amber-600")
+            self.fg_color = tokens.get_color_primitive("white") if not self.dark else tokens.get_color_primitive("black")
+            
+        elif self.variant == "danger":
+            self.bg_color = tokens.get_color("danger", self.dark)
+            self.hover_bg_color = tokens.get_color_primitive("rose-500") if self.dark else tokens.get_color_primitive("rose-600")
+            self.fg_color = tokens.get_color_primitive("white")
+
+    def _handle_hover(self, e):
+        if e.data == "true":
+            self.bgcolor = self.hover_bg_color
+            if self.variant == "outline":
+                self.border = ft.border.all(1, tokens.get_color("primary", self.dark))
+        else:
+            self.bgcolor = self.bg_color
+            if self.variant == "outline":
+                self.border = ft.border.all(1, tokens.get_color("border", self.dark))
+        self.update()
+
+    def _handle_click(self, e):
+        if self.click_handler:
+            self.click_handler(e)
+            
+    def set_disabled(self, disabled: bool):
+        self.is_disabled = disabled
+        self.opacity = 0.6 if disabled else 1.0
+        self.on_click = self._handle_click if not disabled else None
+        self.on_hover = self._handle_hover if not disabled else None
+        self.update()
