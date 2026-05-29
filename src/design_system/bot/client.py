@@ -10,6 +10,7 @@ import io
 import discord
 from discord.ext import commands
 import aiohttp
+import google.generativeai as genai
 from PIL import Image, ImageDraw
 from design_system.tokens.manager import tokens
 
@@ -41,6 +42,89 @@ async def on_ready():
         )
     )
 
+@bot.event
+async def on_message(message):
+    """
+    Triggered on every incoming message. Handles direct mentions, DMs, 
+    and responses in designated channels using the Gemini API.
+    """
+    # Avoid responding to ourselves
+    if message.author == bot.user:
+        return
+
+    # Check if we were mentioned, if it's a DM, or if it's a specific channel
+    is_dm = isinstance(message.channel, discord.DMChannel)
+    is_mention = bot.user in message.mentions
+    is_assistant_channel = message.channel.name == "design-assistant" if hasattr(message.channel, "name") else False
+
+    if is_dm or is_mention or is_assistant_channel:
+        # Show typing status so the user knows the AI is composing
+        async with message.channel.typing():
+            # Clean up the prompt
+            prompt = message.content
+            if is_mention:
+                prompt = prompt.replace(f"<@!{bot.user.id}>", "").replace(f"<@{bot.user.id}>", "").strip()
+            
+            # If prompt is empty, just reply with a friendly greeting
+            if not prompt:
+                await message.reply("👋 Hello! How can I help you design today?")
+                return
+                
+            # Check if gemini is configured
+            gemini_key = os.getenv("GEMINI_API_KEY") or os.getenv("GOOGLE_API_KEY")
+            if not gemini_key:
+                embed = discord.Embed(
+                    title="⚠️ AI Chat Config Missing",
+                    description=(
+                        "I would love to chat with you, but my **Gemini API Key** is not set!\n\n"
+                        "### How to enable:\n"
+                        "1. Get a free API Key from the [Google AI Studio](https://aistudio.google.com/).\n"
+                        "2. Add it to your `.env` file:\n"
+                        "```env\n"
+                        "GEMINI_API_KEY=\"your_key_here\"\n"
+                        "```\n"
+                        "3. Restart the bot (`poetry run design-system-bot`)."
+                    ),
+                    color=discord.Color.orange()
+                )
+                await message.reply(embed=embed)
+                return
+                
+            try:
+                # Configure and query Gemini
+                genai.configure(api_key=gemini_key)
+                # We use gemini-1.5-flash as the highly compatible, lightning-fast default
+                model = genai.GenerativeModel("gemini-1.5-flash")
+                
+                # Context injection to make the AI sound like the Flet Design System assistant
+                system_instruction = (
+                    "You are the official AI Assistant for the Flet Design System. "
+                    "You are intelligent, professional, and friendly. You help users design beautiful "
+                    "Python applications with Flet and align them with design tokens. "
+                    "Keep your responses concise, clear, and perfectly formatted for Discord Markdown."
+                )
+                
+                # Run the synchronous API call in an executor thread to prevent blocking
+                response = await bot.loop.run_in_executor(
+                    None, 
+                    lambda: model.generate_content(
+                        f"System Context: {system_instruction}\n\nUser: {prompt}"
+                    )
+                )
+                
+                # Discord has a 2000 character limit per message
+                reply_text = response.text
+                if len(reply_text) > 1950:
+                    reply_text = reply_text[:1950] + "... (truncated due to Discord limits)"
+                    
+                await message.reply(reply_text)
+                
+            except Exception as ex:
+                await message.reply(f"❌ Error communicating with AI: `{str(ex)}`")
+                
+    # CRITICAL: We must call process_commands so prefix !commands continue working
+    await bot.process_commands(message)
+
 @bot.command(name="help")
 async def help_command(ctx):
     """
@@ -69,6 +153,11 @@ async def help_command(ctx):
     embed.add_field(
         name="`!screenshot <light/dark>`",
         value="Uploads the pre-rendered showcase graphics of the Flet interface.",
+        inline=False
+    )
+    embed.add_field(
+        name="`!opencode <task>`",
+        value="Launches a fully autonomous remote AI developer loop to execute workspace tasks (e.g., read, write files, run pytest, git diff).",
         inline=False
     )
     embed.set_footer(text="Flet Design System • v0.1.0")
@@ -201,6 +290,145 @@ async def screenshot(ctx, mode: str = "light"):
     embed.set_footer(text="Flet Design System • v0.1.0")
     
     await ctx.send(file=file, embed=embed)
+
+@bot.command(name="opencode")
+async def remote_agent_command(ctx, *, task: str = None):
+    """
+    Launches a fully autonomous remote developer loop to execute workspace tasks.
+    """
+    if task is None:
+        await ctx.send("❌ Please specify a task (e.g., `!opencode run pytest` or `!opencode add a button inside layout.py`)")
+        return
+        
+    gemini_key = os.getenv("GEMINI_API_KEY") or os.getenv("GOOGLE_API_KEY")
+    if not gemini_key:
+        await ctx.send("❌ My Gemini API key is missing. Set `GEMINI_API_KEY` in .env first.")
+        return
+        
+    # Send initial status
+    status_msg = await ctx.send("🤖 **Initializing Remote AI Developer Loop...**")
+    
+    # Setup tools execution logic
+    import subprocess
+    import re
+    
+    def read_file(path):
+        # Prevent absolute paths or directory traversal outside project directory
+        clean_path = os.path.normpath(path)
+        if clean_path.startswith("..") or os.path.isabs(clean_path):
+            return "Error: Access denied. Paths must be relative to project root."
+        try:
+            with open(clean_path, "r", encoding="utf-8") as f:
+                return f.read()
+        except Exception as e:
+            return f"Error reading file: {str(e)}"
+            
+    def write_file(path, content):
+        clean_path = os.path.normpath(path)
+        if clean_path.startswith("..") or os.path.isabs(clean_path):
+            return "Error: Access denied. Paths must be relative to project root."
+        try:
+            # Ensure folder exists
+            dir_name = os.path.dirname(clean_path)
+            if dir_name:
+                os.makedirs(dir_name, exist_ok=True)
+            with open(clean_path, "w", encoding="utf-8") as f:
+                f.write(content)
+            return "File successfully updated."
+        except Exception as e:
+            return f"Error writing file: {str(e)}"
+            
+    def run_command(cmd):
+        # Safe command filter: prevent interactive commands or long running commands
+        if any(bad in cmd for bad in ["ssh", "sudo", "interactive", "nano", "vim", "python3 src/design_system/main.py"]):
+            return "Error: Terminal command not supported remotely."
+        try:
+            result = subprocess.run(
+                cmd, shell=True, text=True, capture_output=True, timeout=30
+            )
+            out = result.stdout or ""
+            err = result.stderr or ""
+            return f"STDOUT:\n{out}\n\nSTDERR:\n{err}"
+        except subprocess.TimeoutExpired:
+            return "Error: Terminal command execution timed out (exceeded 30 seconds limit)."
+        except Exception as e:
+            return f"Error executing command: {str(e)}"
+
+    # Configure Gemini
+    genai.configure(api_key=gemini_key)
+    # We use gemini-1.5-flash as the highly compatible, lightning-fast default
+    model = genai.GenerativeModel("gemini-1.5-flash")
+    
+    agent_instruction = (
+        "You are 'opencode', a highly intelligent AI coding agent with remote access "
+        "to a workspace directory. You can read/write files and execute terminal commands "
+        "to complete the user's task. You must use these exact XML tags to trigger tools:\n\n"
+        "1. To read a file:\n"
+        "<read_file>path/to/file.py</read_file>\n\n"
+        "2. To write or overwrite a file:\n"
+        "<write_file path=\"path/to/file.py\">\n"
+        "file content here\n"
+        "</write_file>\n\n"
+        "3. To execute a shell command (e.g. pytest, git status):\n"
+        "<run_command>command to run</run_command>\n\n"
+        "Rules:\n"
+        "- Execute exactly ONE tool action per response.\n"
+        "- Wait for the tool result before generating your next action.\n"
+        "- When you are finished and have verified your work (e.g. running tests), "
+        "provide a summary of modifications and do not output any more tool tags."
+    )
+    
+    # We maintain a state history
+    history = f"System Instructions: {agent_instruction}\n\nUser Task: {task}\n\n"
+    
+    # Loop max steps
+    max_steps = 10
+    for step in range(max_steps):
+        # Query model
+        response = await bot.loop.run_in_executor(
+            None,
+            lambda: model.generate_content(history)
+        )
+        model_output = response.text
+        
+        # Check for tool tags
+        read_match = re.search(r"<read_file>(.*?)</read_file>", model_output, re.DOTALL)
+        write_match = re.search(r"<write_file\s+path=\"(.*?)\"\s*>(.*?)</write_file>", model_output, re.DOTALL)
+        cmd_match = re.search(r"<run_command>(.*?)</run_command>", model_output, re.DOTALL)
+        
+        if read_match:
+            filepath = read_match.group(1).strip()
+            await status_msg.edit(content=f"🔍 **[Step {step+1}/{max_steps}] Reading file:** `{filepath}`...")
+            result = read_file(filepath)
+            history += f"\nModel:\n{model_output}\n\nTool Execution Result (read_file):\n{result}\n"
+            
+        elif write_match:
+            filepath = write_match.group(1).strip()
+            content = write_match.group(2)
+            await status_msg.edit(content=f"✏️ **[Step {step+1}/{max_steps}] Modifying file:** `{filepath}`...")
+            result = write_file(filepath, content)
+            history += f"\nModel:\n{model_output}\n\nTool Execution Result (write_file):\n{result}\n"
+            
+        elif cmd_match:
+            cmd = cmd_match.group(1).strip()
+            await status_msg.edit(content=f"💻 **[Step {step+1}/{max_steps}] Running command:** `{cmd}`...")
+            result = run_command(cmd)
+            # Truncate result if too long for history context
+            if len(result) > 2500:
+                result = result[:2500] + "... (output truncated)"
+            history += f"\nModel:\n{model_output}\n\nTool Execution Result (run_command):\n{result}\n"
+            
+        else:
+            # No tool matched, meaning the agent has finished!
+            final_reply = model_output
+            # Limit length for Discord
+            if len(final_reply) > 1950:
+                final_reply = final_reply[:1950] + "\n... (truncated)"
+            await status_msg.edit(content=f"✅ **Task Completed in {step} steps!**")
+            await ctx.send(final_reply)
+            return
+            
+    await status_msg.edit(content="⚠️ **Task exceeded the maximum of 10 autonomous execution steps.**")
 
 def start_bot():
     """
