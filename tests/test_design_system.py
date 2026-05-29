@@ -72,3 +72,7 @@ def test_components_instantiation():
     assert DesignCheckbox("Checkbox") is not None
     assert DesignSection("Section") is not None
     assert DesignSpacer() is not None
+
+def test_bot_import():
+    from design_system.bot.client import bot
+    assert bot is not None
