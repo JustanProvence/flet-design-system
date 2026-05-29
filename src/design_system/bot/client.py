@@ -43,6 +43,67 @@ def generate_gemini_content(prompt_content: str) -> str:
             continue
     raise last_ex
 
+async def send_in_chunks(ctx, text: str):
+    """
+    Sends a potentially long string to a Discord context,
+    splitting it safely into chunks of up to 1900 characters
+    to prevent truncation while keeping markdown formatting.
+    """
+    if len(text) <= 1950:
+        await ctx.send(text)
+        return
+
+    lines = text.split("\n")
+    current_chunk = []
+    current_length = 0
+    
+    for line in lines:
+        if current_length + len(line) + 1 > 1900:
+            if current_chunk:
+                await ctx.send("\n".join(current_chunk))
+            current_chunk = [line]
+            current_length = len(line)
+        else:
+            current_chunk.append(line)
+            current_length += len(line) + 1
+            
+    if current_chunk:
+        await ctx.send("\n".join(current_chunk))
+
+async def reply_in_chunks(message, text: str):
+    """
+    Replies to a message in chunks to prevent truncation.
+    """
+    if len(text) <= 1950:
+        await message.reply(text)
+        return
+
+    lines = text.split("\n")
+    current_chunk = []
+    current_length = 0
+    first = True
+    
+    for line in lines:
+        if current_length + len(line) + 1 > 1900:
+            chunk_content = "\n".join(current_chunk)
+            if first:
+                await message.reply(chunk_content)
+                first = False
+            else:
+                await message.channel.send(chunk_content)
+            current_chunk = [line]
+            current_length = len(line)
+        else:
+            current_chunk.append(line)
+            current_length += len(line) + 1
+            
+    if current_chunk:
+        chunk_content = "\n".join(current_chunk)
+        if first:
+            await message.reply(chunk_content)
+        else:
+            await message.channel.send(chunk_content)
+
 # Setup bot intents
 intents = discord.Intents.default()
 intents.message_content = True
@@ -132,11 +193,8 @@ async def on_message(message):
                     )
                 )
                 
-                # Discord has a 2000 character limit per message
-                if len(reply_text) > 1950:
-                    reply_text = reply_text[:1950] + "... (truncated due to Discord limits)"
-                    
-                await message.reply(reply_text)
+                # Send response safely in chunks to prevent truncation
+                await reply_in_chunks(message, reply_text)
                 
             except Exception as ex:
                 await message.reply(f"❌ Error communicating with AI: `{str(ex)}`")
@@ -436,12 +494,8 @@ async def remote_agent_command(ctx, *, task: str = None):
             
         else:
             # No tool matched, meaning the agent has finished!
-            final_reply = model_output
-            # Limit length for Discord
-            if len(final_reply) > 1950:
-                final_reply = final_reply[:1950] + "\n... (truncated)"
             await status_msg.edit(content=f"✅ **Task Completed in {step} steps!**")
-            await ctx.send(final_reply)
+            await send_in_chunks(ctx, model_output)
             return
             
     await status_msg.edit(content="⚠️ **Task exceeded the maximum of 10 autonomous execution steps.**")
