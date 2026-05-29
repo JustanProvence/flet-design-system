@@ -108,7 +108,7 @@ async def reply_in_chunks(message, text: str):
 intents = discord.Intents.default()
 intents.message_content = True
 
-bot = commands.Bot(command_prefix="!", intents=intents, help_command=None)
+bot = commands.Bot(command_prefix=["!", "/"], intents=intents, help_command=None)
 
 @bot.event
 async def on_ready():
@@ -135,12 +135,15 @@ async def on_message(message):
     if message.author == bot.user:
         return
 
+    # Check if the message starts with any command prefix
+    starts_with_prefix = any(message.content.startswith(p) for p in ["!", "/"])
+
     # Check if we were mentioned, if it's a DM, or if it's a specific channel
     is_dm = isinstance(message.channel, discord.DMChannel)
     is_mention = bot.user in message.mentions
     is_assistant_channel = message.channel.name == "design-assistant" if hasattr(message.channel, "name") else False
 
-    if is_dm or is_mention or is_assistant_channel:
+    if (is_dm or is_mention or is_assistant_channel) and not starts_with_prefix:
         # Show typing status so the user knows the AI is composing
         async with message.channel.typing():
             # Clean up the prompt
@@ -213,28 +216,28 @@ async def help_command(ctx):
         color=discord.Color.blue()
     )
     embed.add_field(
-        name="`!status`",
+        name="`/status` or `!status`",
         value="Checks if the local Flet web server is online at port 8550.",
         inline=False
     )
     embed.add_field(
-        name="`!tokens`",
+        name="`/tokens` or `!tokens`",
         value="Lists global spacing, border-radius, and typography metadata.",
         inline=False
     )
     embed.add_field(
-        name="`!color <token_name>`",
-        value="Resolves a color token and draws a visual color chip (e.g., `!color primary`).",
+        name="`/color <token_name>` or `!color <token_name>`",
+        value="Resolves a color token and draws a visual color chip (e.g., `/color primary`).",
         inline=False
     )
     embed.add_field(
-        name="`!screenshot <light/dark>`",
+        name="`/screenshot <light/dark>` or `!screenshot <light/dark>`",
         value="Uploads the pre-rendered showcase graphics of the Flet interface.",
         inline=False
     )
     embed.add_field(
-        name="`!opencode <task>`",
-        value="Launches a fully autonomous remote AI developer loop to execute workspace tasks (e.g., read, write files, run pytest, git diff).",
+        name="`/oc <task>` or `/opencode <task>`",
+        value="Launches a fully autonomous remote AI developer loop to execute workspace tasks (e.g., `/oc run pytest`).",
         inline=False
     )
     embed.set_footer(text="Flet Design System • v0.1.0")
@@ -368,13 +371,13 @@ async def screenshot(ctx, mode: str = "light"):
     
     await ctx.send(file=file, embed=embed)
 
-@bot.command(name="opencode")
+@bot.command(name="opencode", aliases=["oc"])
 async def remote_agent_command(ctx, *, task: str = None):
     """
     Launches a fully autonomous remote developer loop to execute workspace tasks.
     """
     if task is None:
-        await ctx.send("❌ Please specify a task (e.g., `!opencode run pytest` or `!opencode add a button inside layout.py`)")
+        await ctx.send("❌ Please specify a task (e.g., `/oc run pytest` or `/oc add a button inside layout.py`)")
         return
         
     gemini_key = os.getenv("GEMINI_API_KEY") or os.getenv("GOOGLE_API_KEY")
@@ -456,8 +459,11 @@ async def remote_agent_command(ctx, *, task: str = None):
     # We maintain a state history
     history = f"System Instructions: {agent_instruction}\n\nUser Task: {task}\n\n"
     
-    # Loop max steps
-    max_steps = 10
+    # Loop max steps (default: 30, customizable via MAX_STEPS env var)
+    try:
+        max_steps = int(os.getenv("MAX_STEPS", "30"))
+    except ValueError:
+        max_steps = 30
     for step in range(max_steps):
         # Query model with automatic fallbacks
         model_output = await bot.loop.run_in_executor(
@@ -498,7 +504,7 @@ async def remote_agent_command(ctx, *, task: str = None):
             await send_in_chunks(ctx, model_output)
             return
             
-    await status_msg.edit(content="⚠️ **Task exceeded the maximum of 10 autonomous execution steps.**")
+    await status_msg.edit(content=f"⚠️ **Task exceeded the maximum of {max_steps} autonomous execution steps.**")
 
 def start_bot():
     """
