@@ -34,5 +34,5 @@ requires = ["poetry-core"]
 build-backend = "poetry.core.masonry.api"
 
 [tool.poetry.scripts]
-design-system = "design_system.main:main"
+design-system = "design_system.main:run_app"
 design-system-bot = "design_system.bot.client:start_bot"
