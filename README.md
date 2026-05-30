@@ -69,13 +69,30 @@ cd design
 poetry install
 ```
 
-### 🏃 Running the Documentation Server
+### 🏃 Running the Applications
 
-Flet is pre-configured to run headlessly as a local web server, resolving any local media environment issues.
+Flet is pre-configured to run as a local web server, resolving any WSL or headless media environment issues.
 
+### 🎨 Start the Interactive Sandbox Docs
+You can launch the central design system sandbox and documentation server on port `8550` using the Poetry script command:
 ```bash
-# Start the server
-poetry run python3 src/design_system/main.py
+poetry run design-system
+```
+Or directly using python:
+```bash
+poetry run python src/design_system/main.py
+```
+
+### 📱 Start the Responsive Application Example
+You can launch the responsive application example on port `8551`:
+```bash
+poetry run python responsive_app_example/main_flet.py
+```
+
+### 🤖 Start the Discord Status Bot
+To launch the integrated Discord assistant bot (ensure your `DISCORD_BOT_TOKEN` and `GEMINI_API_KEY` are set in `.env`):
+```bash
+poetry run design-system-bot
 ```
 
 Now, navigate your web browser to:
