@@ -59,7 +59,7 @@ class DesignButton(ft.Container):
         if self.icon_data:
             content_items.append(
                 ft.Icon(
-                    name=self.icon_data,
+                    self.icon_data,
                     color=self.fg_color,
                     size=16
                 )
@@ -86,11 +86,11 @@ class DesignButton(ft.Container):
             bgcolor=self.bg_color,
             border=self.border_style,
             border_radius=tokens.get_radius("md"),
-            padding=ft.padding.symmetric(horizontal=tokens.get_spacing("lg")),
-            alignment=ft.alignment.center,
+            padding=ft.Padding.symmetric(horizontal=tokens.get_spacing("lg")),
+            alignment=ft.Alignment.CENTER,
             on_click=self._handle_click if not self.is_disabled else None,
             on_hover=self._handle_hover if not self.is_disabled else None,
-            animate=ft.animation.Animation(200, ft.AnimationCurve.EASE_OUT_QUAD),
+            animate=ft.Animation(200, ft.AnimationCurve.EASE_OUT_QUAD),
             opacity=0.6 if self.is_disabled else 1.0,
             **kwargs
         )
@@ -117,7 +117,7 @@ class DesignButton(ft.Container):
             self.bg_color = "transparent"
             self.hover_bg_color = tokens.get_color("surface-variant", self.dark)
             self.fg_color = tokens.get_color("primary", self.dark)
-            self.border_style = ft.border.all(1, tokens.get_color("border", self.dark))
+            self.border_style = ft.Border.all(1, tokens.get_color("border", self.dark))
             
         elif self.variant == "text":
             self.bg_color = "transparent"
@@ -146,11 +146,11 @@ class DesignButton(ft.Container):
         if e.data == "true":
             self.bgcolor = self.hover_bg_color
             if self.variant == "outline":
-                self.border = ft.border.all(1, tokens.get_color("primary", self.dark))
+                self.border = ft.Border.all(1, tokens.get_color("primary", self.dark))
         else:
             self.bgcolor = self.bg_color
             if self.variant == "outline":
-                self.border = ft.border.all(1, tokens.get_color("border", self.dark))
+                self.border = ft.Border.all(1, tokens.get_color("border", self.dark))
         self.update()
 
     def _handle_click(self, e):

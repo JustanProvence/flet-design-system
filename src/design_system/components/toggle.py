@@ -50,7 +50,7 @@ class DesignSwitch(ft.Switch):
             active_track_color=active_track_color,
             inactive_thumb_color=inactive_thumb_color,
             inactive_track_color=inactive_track_color,
-            label_style=ft.TextStyle(
+            label_text_style=ft.TextStyle(
                 color=text_color,
                 size=tokens.get_font_size("md"),
                 font_family=tokens.get_font_family("body")

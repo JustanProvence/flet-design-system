@@ -59,15 +59,15 @@ class DesignTextField(ft.TextField):
         hint_color = tokens.get_color("text-secondary", self.dark)
         
         # Setup icons
-        prefix = ft.Icon(name=prefix_icon, color=hint_color, size=18) if prefix_icon else None
-        suffix = ft.Icon(name=suffix_icon, color=hint_color, size=18) if suffix_icon else None
+        prefix = ft.Icon(prefix_icon, color=hint_color, size=18) if prefix_icon else None
+        suffix = ft.Icon(suffix_icon, color=hint_color, size=18) if suffix_icon else None
 
         super().__init__(
             label=label,
             hint_text=hint_text,
             password=is_password,
             can_reveal_password=can_reveal_password,
-            error_text=error_text,
+            error=error_text,
             prefix=prefix,
             suffix=suffix,
             on_change=on_change,

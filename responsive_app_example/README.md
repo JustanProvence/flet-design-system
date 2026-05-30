@@ -13,7 +13,7 @@ To run this application, follow these steps:
     ```
 
 2.  **Ensure Flet is installed:**
-    If you haven't already, install Flet in your environment. This project's `pyproject.toml` specifies `flet = "^0.23"`. You can install it using Poetry (from the project root) or pip:
+    If you haven't already, install Flet in your environment. This project's `pyproject.toml` specifies `flet = "0.85.2"`. You can install it using Poetry (from the project root) or pip:
     ```bash
     # From the project root directory (one level up from this directory)
     poetry install

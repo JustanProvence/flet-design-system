@@ -70,7 +70,7 @@ class DesignCard(ft.Container):
             shadow=shadow_style,
             on_click=self._handle_click if interactive else None,
             on_hover=self._handle_hover if interactive else None,
-            animate=ft.animation.Animation(150, ft.AnimationCurve.EASE_OUT_QUAD) if interactive else None,
+            animate=ft.Animation(150, ft.AnimationCurve.EASE_OUT_QUAD) if interactive else None,
             **kwargs
         )
 
@@ -88,7 +88,7 @@ class DesignCard(ft.Container):
             self.hover_bg_color = tokens.get_color("border", self.dark)
         elif self.variant == "outline":
             self.bg_color = "transparent"
-            self.border_style = ft.border.all(1, tokens.get_color("border", self.dark))
+            self.border_style = ft.Border.all(1, tokens.get_color("border", self.dark))
             self.hover_bg_color = tokens.get_color("surface-variant", self.dark)
 
     def _handle_hover(self, e):

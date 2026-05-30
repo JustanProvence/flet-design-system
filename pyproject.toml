@@ -7,13 +7,15 @@ packages = [{include = "design_system", from = "src"}]
 
 [tool.poetry.dependencies]
 python = "^3.10"
-flet = "^0.23"
+flet = "0.85.2"
 pillow = "^12.2.0"
 discord-py = ">=2.3.0"
 google-generativeai = ">=0.3.0"
 
 [tool.poetry.group.dev.dependencies]
 pytest = "^8.0"
+playwright = "*"
+pytest-playwright = "*"
 
 [tool.pytest.ini_options]
 pythonpath = ["src"]

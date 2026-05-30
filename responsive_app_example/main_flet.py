@@ -38,7 +38,7 @@ def main(page: ft.Page):
         page.theme_mode = ft.ThemeMode.DARK if state["dark_mode"] else ft.ThemeMode.LIGHT
         
         # Toggle icon
-        theme_btn.icon = ft.icons.LIGHT_MODE_ROUNDED if state["dark_mode"] else ft.icons.DARK_MODE_ROUNDED
+        theme_btn.icon = ft.Icons.LIGHT_MODE_ROUNDED if state["dark_mode"] else ft.Icons.DARK_MODE_ROUNDED
         theme_btn.tooltip = "Switch to Light Mode" if state["dark_mode"] else "Switch to Dark Mode"
         theme_btn.icon_color = c("primary")
         theme_btn.update()
@@ -48,7 +48,7 @@ def main(page: ft.Page):
         
         # Also update dynamic colors on header and footer
         top_banner.bgcolor = c("surface")
-        top_banner.border = ft.border.only(bottom=ft.border.BorderSide(1, c("border")))
+        top_banner.border = ft.Border.only(bottom=ft.BorderSide(1, c("border")))
         top_banner_title.color = c("text-primary")
         top_banner_nav_home.color = c("text-primary")
         top_banner_nav_about.color = c("text-primary")
@@ -58,7 +58,7 @@ def main(page: ft.Page):
 
         footer_content.color = c("text-secondary")
         bottom_footer.bgcolor = c("surface")
-        bottom_footer.border = ft.border.only(top=ft.border.BorderSide(1, c("border")))
+        bottom_footer.border = ft.Border.only(top=ft.BorderSide(1, c("border")))
         bottom_footer.update()
 
         # Update sidebar and main content dynamic colors (text, card bg, etc.)
@@ -74,7 +74,7 @@ def main(page: ft.Page):
 
 
     theme_btn = ft.IconButton(
-        icon=ft.icons.DARK_MODE_ROUNDED,
+        icon=ft.Icons.DARK_MODE_ROUNDED,
         icon_color=c("primary"),
         icon_size=20,
         tooltip="Switch to Dark Mode",
@@ -119,8 +119,8 @@ def main(page: ft.Page):
             vertical_alignment=ft.CrossAxisAlignment.CENTER,
         ),
         bgcolor=c("surface"),
-        padding=ft.padding.symmetric(horizontal=tokens.get_spacing("lg"), vertical=tokens.get_spacing("md")),
-        border=ft.border.only(bottom=ft.border.BorderSide(1, c("border"))),
+        padding=ft.Padding.symmetric(horizontal=tokens.get_spacing("lg"), vertical=tokens.get_spacing("md")),
+        border=ft.Border.only(bottom=ft.BorderSide(1, c("border"))),
     )
 
     # Sidebar Content Builder
@@ -150,7 +150,7 @@ def main(page: ft.Page):
             padding=tokens.get_spacing("lg"),
             bgcolor=c("surface"),
             border_radius=tokens.get_radius("md"),
-            border=ft.border.all(1, c("border")),
+            border=ft.Border.all(1, c("border")),
             expand=True,
         )
     
@@ -173,69 +173,63 @@ def main(page: ft.Page):
                     DesignSpacer("md"),
                     ft.ResponsiveRow(
                         [
-                            ft.Column(
-                                [
-                                    DesignCard(
-                                        content=ft.Column(
-                                            [
-                                                HeadingText("Feature One", level=3, dark=state["dark_mode"]),
-                                                BodyText(
-                                                    "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
-                                                    size="sm",
-                                                    dark=state["dark_mode"],
-                                                ),
-                                            ],
-                                            spacing=tokens.get_spacing("xs"),
-                                        ),
-                                        dark=state["dark_mode"],
-                                        variant="surface",
-                                        interactive=True,
-                                    )
-                                ],
+                            ft.Container(
+                                content=DesignCard(
+                                    content=ft.Column(
+                                        [
+                                            HeadingText("Feature One", level=3, dark=state["dark_mode"]),
+                                            BodyText(
+                                                "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
+                                                size="sm",
+                                                dark=state["dark_mode"],
+                                            ),
+                                        ],
+                                        spacing=tokens.get_spacing("xs"),
+                                    ),
+                                    dark=state["dark_mode"],
+                                    variant="surface",
+                                    interactive=True,
+                                ),
                                 col={"xs": 12, "sm": 6, "md": 4},
                                 padding=tokens.get_spacing("xs"),
                             ),
-                            ft.Column(
-                                [
-                                    DesignCard(
-                                        content=ft.Column(
-                                            [
-                                                HeadingText("Feature Two", level=3, dark=state["dark_mode"]),
-                                                BodyText(
-                                                    "Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.",
-                                                    size="sm",
-                                                    dark=state["dark_mode"],
-                                                ),
-                                            ],
-                                            spacing=tokens.get_spacing("xs"),
-                                        ),
-                                        dark=state["dark_mode"],
-                                        variant="surface",
-                                        interactive=True,
-                                    )
-                                ],
+                            ft.Container(
+                                content=DesignCard(
+                                    content=ft.Column(
+                                        [
+                                            HeadingText("Feature Two", level=3, dark=state["dark_mode"]),
+                                            BodyText(
+                                                "Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.",
+                                                size="sm",
+                                                dark=state["dark_mode"],
+                                            ),
+                                        ],
+                                        spacing=tokens.get_spacing("xs"),
+                                    ),
+                                    dark=state["dark_mode"],
+                                    variant="surface",
+                                    interactive=True,
+                                ),
                                 col={"xs": 12, "sm": 6, "md": 4},
                                 padding=tokens.get_spacing("xs"),
                             ),
-                            ft.Column(
-                                [
-                                    DesignCard(
-                                        content=ft.Column(
-                                            [
-                                                HeadingText("Feature Three", level=3, dark=state["dark_mode"]),
-                                                BodyText(
-                                                    "Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.",
-                                                    size="sm",
-                                                    dark=state["dark_mode"],
-                                                ),
-                                            ],
-                                            spacing=tokens.get_spacing("xs"),
-                                        ),
-                                        dark=state["dark_mode"],
-                                        variant="surface",
-                                        interactive=True,
-                                    )
-                                ],
+                            ft.Container(
+                                content=DesignCard(
+                                    content=ft.Column(
+                                        [
+                                            HeadingText("Feature Three", level=3, dark=state["dark_mode"]),
+                                            BodyText(
+                                                "Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.",
+                                                size="sm",
+                                                dark=state["dark_mode"],
+                                            ),
+                                        ],
+                                        spacing=tokens.get_spacing("xs"),
+                                    ),
+                                    dark=state["dark_mode"],
+                                    variant="surface",
+                                    interactive=True,
+                                ),
                                 col={"xs": 12, "sm": 6, "md": 4},
                                 padding=tokens.get_spacing("xs"),
                             ),
@@ -279,21 +273,19 @@ def main(page: ft.Page):
             alignment=ft.MainAxisAlignment.CENTER,
         ),
         bgcolor=c("surface"),
-        padding=ft.padding.symmetric(horizontal=tokens.get_spacing("lg"), vertical=tokens.get_spacing("md")),
-        border=ft.border.only(top=ft.border.BorderSide(1, c("border"))),
+        padding=ft.Padding.symmetric(horizontal=tokens.get_spacing("lg"), vertical=tokens.get_spacing("md")),
+        border=ft.Border.only(top=ft.BorderSide(1, c("border"))),
     )
 
     # Core main layout skeleton
     app_layout = ft.Column(
         [
             top_banner,
-            ft.Expanded(
-                child=ft.Container(
-                    content=main_layout_row,
-                    padding=tokens.get_spacing("lg"),
-                    expand=True,
-                    alignment=ft.alignment.top_left,
-                )
+            ft.Container(
+                content=ft.Column([main_layout_row], scroll=ft.ScrollMode.ADAPTIVE),
+                padding=ft.Padding.symmetric(horizontal=tokens.get_spacing("lg")),
+                expand=True,
+                alignment=ft.Alignment.TOP_LEFT,
             ),
             bottom_footer,
         ],

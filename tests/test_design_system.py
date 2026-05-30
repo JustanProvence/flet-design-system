@@ -65,9 +65,9 @@ def test_components_instantiation():
     assert DisplayText("Hello") is not None
     assert HeadingText("Title") is not None
     assert BodyText("Body") is not None
-    assert DesignButton("Click Me", on_click=lambda e: None) is not None
+    assert DesignButton("Click Me", on_click=lambda e: None, icon=ft.Icons.CHECK_CIRCLE) is not None
     assert DesignCard(content=ft.Text("Card")) is not None
-    assert DesignTextField(label="Input", hint_text="Enter text") is not None
+    assert DesignTextField(label="Input", hint_text="Enter text", prefix_icon=ft.Icons.LOCK_ROUNDED) is not None
     assert DesignSwitch("Switch") is not None
     assert DesignCheckbox("Checkbox") is not None
     assert DesignSection("Section") is not None
@@ -76,3 +76,33 @@ def test_components_instantiation():
 def test_bot_import():
     from design_system.bot.client import bot
     assert bot is not None
+
+def test_all_sidebar_navigation_views(monkeypatch):
+    from unittest.mock import MagicMock
+    mock_page = MagicMock()
+    mock_page.update = lambda: None
+    
+    # Use monkeypatch to safely override Flet properties during this test only
+    monkeypatch.setattr(ft.Control, "update", lambda self: None)
+    monkeypatch.setattr(ft.Control, "page", property(lambda self: mock_page))
+    
+    from design_system.main import main
+    
+    added_controls = []
+    def mock_add(*controls):
+        added_controls.extend(controls)
+    mock_page.add = mock_add
+    
+    # Call main
+    main(mock_page)
+    
+    assert len(added_controls) == 1
+    main_layout = added_controls[0]
+    row_layout = main_layout.controls[1]
+    sidebar_col = row_layout.controls[0]
+    sidebar_menu = sidebar_col.content.controls[2]
+    
+    for nav_item in sidebar_menu.controls:
+        # Call the on_click handler of each nav_item Container and ensure it executes without errors
+        nav_item.on_click(None)
+
