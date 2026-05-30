@@ -2,15 +2,12 @@
 import flet as ft
 from design_system.tokens.manager import tokens
 from design_system.components.typography import (
-    DisplayText,
     HeadingText,
-    SubheadingText,
     BodyText,
-    CaptionText,
 )
-from design_system.components.button import DesignButton
 from design_system.components.card import DesignCard
 from design_system.components.layout import DesignSpacer
+
 
 def main(page: ft.Page):
     # Base page settings
@@ -36,16 +33,16 @@ def main(page: ft.Page):
     def handle_theme_toggle(e):
         state["dark_mode"] = not state["dark_mode"]
         page.theme_mode = ft.ThemeMode.DARK if state["dark_mode"] else ft.ThemeMode.LIGHT
-        
+
         # Toggle icon
         theme_btn.icon = ft.Icons.LIGHT_MODE_ROUNDED if state["dark_mode"] else ft.Icons.DARK_MODE_ROUNDED
         theme_btn.tooltip = "Switch to Light Mode" if state["dark_mode"] else "Switch to Dark Mode"
         theme_btn.icon_color = c("primary")
         theme_btn.update()
-        
+
         # Update page and rebuild
         update_theme_background()
-        
+
         # Also update dynamic colors on header and footer
         top_banner.bgcolor = c("surface")
         top_banner.border = ft.Border.only(bottom=ft.BorderSide(1, c("border")))
@@ -66,12 +63,11 @@ def main(page: ft.Page):
         # being passed down or manually updating if needed.
         # A full refresh of the main_content_area would be ideal, but for now,
         # relying on individual components' 'dark' parameter is sufficient.
-        main_content_container.content = build_main_content() # Rebuild content to apply new theme
+        main_content_container.content = build_main_content()  # Rebuild content to apply new theme
         main_content_container.update()
 
         sidebar_container.content = build_sidebar()
         sidebar_container.update()
-
 
     theme_btn = ft.IconButton(
         icon=ft.Icons.DARK_MODE_ROUNDED,
@@ -103,8 +99,10 @@ def main(page: ft.Page):
                             [
                                 ft.TextButton(content=top_banner_nav_home, on_click=lambda e: print("Home clicked")),
                                 ft.TextButton(content=top_banner_nav_about, on_click=lambda e: print("About clicked")),
-                                ft.TextButton(content=top_banner_nav_services, on_click=lambda e: print("Services clicked")),
-                                ft.TextButton(content=top_banner_nav_contact, on_click=lambda e: print("Contact clicked")),
+                                ft.TextButton(content=top_banner_nav_services,
+                                              on_click=lambda e: print("Services clicked")),
+                                ft.TextButton(content=top_banner_nav_contact,
+                                              on_click=lambda e: print("Contact clicked")),
                                 theme_btn,
                             ],
                             spacing=tokens.get_spacing("sm"),
@@ -153,10 +151,10 @@ def main(page: ft.Page):
             border=ft.Border.all(1, c("border")),
             expand=True,
         )
-    
+
     sidebar_container = ft.Container(
         content=build_sidebar(),
-        col={"xs": 12, "md": 4}, # Full width on small, 1/3 on medium/large
+        col={"xs": 12, "md": 4},  # Full width on small, 1/3 on medium/large
         padding=tokens.get_spacing("md"),
     )
 
@@ -234,7 +232,7 @@ def main(page: ft.Page):
                                 padding=tokens.get_spacing("xs"),
                             ),
                         ],
-                        run_spacing={"xs": tokens.get_spacing("sm")}, # Spacing between cards in a row
+                        run_spacing={"xs": tokens.get_spacing("sm")},  # Spacing between cards in a row
                         # column_spacing=tokens.get_spacing("sm"), # Spacing between columns in a row
                     ),
                     DesignSpacer("md"),
@@ -249,7 +247,7 @@ def main(page: ft.Page):
 
     main_content_container = ft.Container(
         content=build_main_content(),
-        col={"xs": 12, "md": 8}, # Full width on small, 2/3 on medium/large
+        col={"xs": 12, "md": 8},  # Full width on small, 2/3 on medium/large
     )
 
     # Main Content Area (Sidebar + Main Content)
@@ -258,13 +256,13 @@ def main(page: ft.Page):
             sidebar_container,
             main_content_container,
         ],
-        spacing=tokens.get_spacing("md"), # Spacing between sidebar and main content
-        run_spacing=tokens.get_spacing("md"), # Spacing when sidebar wraps below main content
+        spacing=tokens.get_spacing("md"),  # Spacing between sidebar and main content
+        run_spacing=tokens.get_spacing("md"),  # Spacing when sidebar wraps below main content
         vertical_alignment=ft.CrossAxisAlignment.START,
     )
 
     # Footer Section
-    footer_content = BodyText(f"© 2023 Responsive Example App", dark=state["dark_mode"])
+    footer_content = BodyText("© 2023 Responsive Example App", dark=state["dark_mode"])
     bottom_footer = ft.Container(
         content=ft.Row(
             [
@@ -294,6 +292,7 @@ def main(page: ft.Page):
     )
 
     page.add(app_layout)
+
 
 if __name__ == "__main__":
     ft.app(target=main, view=ft.AppView.WEB_BROWSER, port=8551)
