@@ -1,0 +1,250 @@
+
+/* Basic Reset and Box Sizing */
+*, *::before, *::after {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+/* Root Design System Variables (Custom Properties) */
+:root {
+    --primary-color: #007bff;
+    --secondary-color: #6c757d;
+    --background-color: #f8f9fa;
+    --text-color: #343a40;
+    --light-text-color: #ffffff;
+    --border-color: #dee2e6;
+    --card-background: #ffffff;
+    --font-family-sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+    --heading-font-weight: 600;
+    --base-font-size: 16px;
+    --spacing-xs: 0.5rem;   /* 8px */
+    --spacing-sm: 1rem;     /* 16px */
+    --spacing-md: 1.5rem;   /* 24px */
+    --spacing-lg: 2rem;     /* 32px */
+    --spacing-xl: 3rem;     /* 48px */
+    --border-radius: 0.25rem;
+    --shadow-sm: 0 .125rem .25rem rgba(0,0,0,.075);
+    --shadow-md: 0 .5rem 1rem rgba(0,0,0,.15);
+}
+
+body {
+    font-family: var(--font-family-sans);
+    line-height: 1.6;
+    color: var(--text-color);
+    background-color: var(--background-color);
+    font-size: var(--base-font-size);
+}
+
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 var(--spacing-sm);
+}
+
+/* Typography */
+h1, h2, h3, h4, h5, h6 {
+    font-weight: var(--heading-font-weight);
+    margin-bottom: var(--spacing-sm);
+    color: var(--text-color);
+}
+
+h1 { font-size: 2.5rem; }
+h2 { font-size: 2rem; }
+h3 { font-size: 1.75rem; }
+
+p {
+    margin-bottom: var(--spacing-sm);
+}
+
+a {
+    color: var(--primary-color);
+    text-decoration: none;
+}
+
+a:hover {
+    text-decoration: underline;
+}
+
+ul {
+    list-style: none;
+    padding: 0;
+    margin-bottom: var(--spacing-sm);
+}
+
+/* Navbar */
+.navbar {
+    background-color: var(--primary-color);
+    color: var(--light-text-color);
+    padding: var(--spacing-sm) 0;
+    box-shadow: var(--shadow-sm);
+}
+
+.navbar .container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap; /* Allow wrapping on smaller screens */
+}
+
+.navbar h1 {
+    color: var(--light-text-color);
+    margin: 0;
+    font-size: 1.75rem; /* Adjust for navbar */
+}
+
+.navbar nav ul {
+    display: flex;
+    margin: 0;
+}
+
+.navbar nav ul li {
+    margin-left: var(--spacing-md);
+}
+
+.navbar nav ul li a {
+    color: var(--light-text-color);
+    font-weight: bold;
+    padding: var(--spacing-xs) 0;
+    display: block;
+    transition: color 0.3s ease;
+}
+
+.navbar nav ul li a:hover {
+    color: rgba(255, 255, 255, 0.8);
+    text-decoration: none;
+}
+
+/* Main Content Layout */
+.content-area {
+    display: flex;
+    gap: var(--spacing-lg);
+    padding: var(--spacing-lg) 0;
+    flex-wrap: wrap; /* Allows columns to wrap into rows */
+}
+
+.main-content {
+    flex: 3; /* Takes more space */
+    min-width: 0; /* Important for flex items with long content */
+}
+
+.sidebar {
+    flex: 1; /* Takes less space */
+    background-color: var(--card-background);
+    padding: var(--spacing-md);
+    border-radius: var(--border-radius);
+    box-shadow: var(--shadow-sm);
+}
+
+.sidebar ul li {
+    padding: var(--spacing-xs) 0;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.sidebar ul li:last-child {
+    border-bottom: none;
+}
+
+/* Cards */
+.cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: var(--spacing-md);
+    margin-top: var(--spacing-md);
+}
+
+.card {
+    background-color: var(--card-background);
+    padding: var(--spacing-md);
+    border-radius: var(--border-radius);
+    box-shadow: var(--shadow-sm);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.card:hover {
+    transform: translateY(-5px);
+    box-shadow: var(--shadow-md);
+}
+
+.card h3 {
+    color: var(--primary-color);
+    margin-top: 0;
+}
+
+/* Footer */
+.footer {
+    background-color: var(--text-color);
+    color: var(--light-text-color);
+    text-align: center;
+    padding: var(--spacing-md) 0;
+    margin-top: var(--spacing-lg);
+}
+
+.footer p {
+    margin-bottom: 0;
+}
+
+/* Responsive Design */
+
+/* Small screens (e.g., mobile phones) */
+@media (max-width: 768px) {
+    .navbar .container {
+        flex-direction: column;
+        text-align: center;
+    }
+
+    .navbar h1 {
+        margin-bottom: var(--spacing-sm);
+    }
+
+    .navbar nav ul {
+        flex-direction: column;
+        width: 100%;
+    }
+
+    .navbar nav ul li {
+        margin: var(--spacing-xs) 0;
+        border-top: 1px solid rgba(255, 255, 255, 0.2);
+    }
+
+    .navbar nav ul li:first-child {
+        border-top: none;
+    }
+
+    .content-area {
+        flex-direction: column; /* Stack sidebar and main content */
+    }
+
+    .sidebar {
+        order: 2; /* Move sidebar below main content */
+        width: 100%;
+    }
+
+    .main-content {
+        order: 1; /* Main content stays on top */
+        width: 100%;
+    }
+
+    .cards {
+        grid-template-columns: 1fr; /* Stack cards vertically */
+    }
+
+    h1 { font-size: 2rem; }
+    h2 { font-size: 1.75rem; }
+    h3 { font-size: 1.5rem; }
+}
+
+/* Medium screens (e.g., tablets) - Adjustments for gap and padding if needed */
+@media (min-width: 769px) and (max-width: 992px) {
+    .content-area {
+        gap: var(--spacing-md);
+    }
+
+    .sidebar {
+        flex: 1 1 250px; /* Allow sidebar to shrink/grow but keep a minimum width */
+    }
+
+    .main-content {
+        flex: 3 1 auto;
+    }
+}
