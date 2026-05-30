@@ -11,10 +11,7 @@ from design_system.tokens.manager import tokens
 from design_system.components.typography import (
     DisplayText,
     HeadingText,
-    SubheadingText,
     BodyText,
-    CaptionText,
-    MonospaceText,
 )
 from design_system.components.button import DesignButton
 from design_system.components.card import DesignCard
@@ -22,13 +19,14 @@ from design_system.components.input import DesignTextField
 from design_system.components.toggle import DesignSwitch, DesignCheckbox
 from design_system.components.layout import DesignSection, DesignSpacer
 
+
 def main(page: ft.Page):
     # Base page settings
     page.title = "Flet Token-Driven Design System"
     page.theme_mode = ft.ThemeMode.LIGHT
     page.padding = 0
     page.bgcolor = tokens.get_color("background", dark=False)
-    
+
     # State tracker
     state = {
         "active_tab": "welcome",  # welcome, tokens, buttons, cards, inputs, toggles, layouts
@@ -115,28 +113,32 @@ def main(page: ft.Page):
                                 ft.Row(
                                     [
                                         ft.Icon(ft.Icons.TOKEN_ROUNDED, color=c("primary"), size=20),
-                                        BodyText("Three-layer design token architecture (Primitive → Semantic → Component)", dark=state["dark_mode"]),
+                                        BodyText(
+                                            "Three-layer design token architecture (Primitive → Semantic → Component)", dark=state["dark_mode"]),
                                     ],
                                     spacing=8,
                                 ),
                                 ft.Row(
                                     [
                                         ft.Icon(ft.Icons.PALETTE_ROUNDED, color=c("primary"), size=20),
-                                        BodyText("Native light/dark mode mapping powered by central tokens.json config", dark=state["dark_mode"]),
+                                        BodyText(
+                                            "Native light/dark mode mapping powered by central tokens.json config", dark=state["dark_mode"]),
                                     ],
                                     spacing=8,
                                 ),
                                 ft.Row(
                                     [
                                         ft.Icon(ft.Icons.WIDGETS_ROUNDED, color=c("primary"), size=20),
-                                        BodyText("Complete reusable custom UI component library (Buttons, Cards, Inputs, Toggles, etc.)", dark=state["dark_mode"]),
+                                        BodyText(
+                                            "Complete reusable custom UI component library (Buttons, Cards, Inputs, Toggles, etc.)", dark=state["dark_mode"]),
                                     ],
                                     spacing=8,
                                 ),
                                 ft.Row(
                                     [
                                         ft.Icon(ft.Icons.TERMINAL_ROUNDED, color=c("primary"), size=20),
-                                        BodyText("Robust project environment setup using Poetry and python-flet", dark=state["dark_mode"]),
+                                        BodyText("Robust project environment setup using Poetry and python-flet",
+                                                 dark=state["dark_mode"]),
                                     ],
                                     spacing=8,
                                 ),
@@ -220,7 +222,8 @@ def main(page: ft.Page):
         for name, val in tokens.global_tokens["radius"].items():
             radius_boxes.append(
                 ft.Container(
-                    content=ft.Text(name, size=11, color=tokens.get_color_primitive("white") if state["dark_mode"] else tokens.get_color_primitive("black")),
+                    content=ft.Text(name, size=11, color=tokens.get_color_primitive("white")
+                                    if state["dark_mode"] else tokens.get_color_primitive("black")),
                     bgcolor=c("primary-container"),
                     width=60,
                     height=60,
@@ -253,7 +256,7 @@ def main(page: ft.Page):
                         dark=state["dark_mode"],
                     ),
                     DesignSpacer("md"),
-                    
+
                     DesignSection(
                         title="1. Brand Colors (Primitives)",
                         subtitle="Central color palette values utilized inside both light and dark themes",
@@ -261,7 +264,7 @@ def main(page: ft.Page):
                         dark=state["dark_mode"],
                     ),
                     DesignSpacer("md"),
-                    
+
                     DesignSection(
                         title="2. Spacing Scale",
                         subtitle="Standardized layout gap values to maintain strict horizontal and vertical alignment",
@@ -269,7 +272,7 @@ def main(page: ft.Page):
                         dark=state["dark_mode"],
                     ),
                     DesignSpacer("md"),
-                    
+
                     DesignSection(
                         title="3. Border Radius Scale",
                         subtitle="Standardized rounding rules across panels, cards, and button states",
@@ -277,7 +280,7 @@ def main(page: ft.Page):
                         dark=state["dark_mode"],
                     ),
                     DesignSpacer("md"),
-                    
+
                     DesignSection(
                         title="4. Typography Scale",
                         subtitle="Scalable display, heading, and body typography rules mapped directly from tokens",
@@ -307,13 +310,20 @@ def main(page: ft.Page):
             danger_btn.set_disabled(state["btn_disabled"])
 
         # Creating reference instances
-        primary_btn = DesignButton("Primary Button", on_click=on_btn_click, variant="primary", dark=state["dark_mode"], disabled=state["btn_disabled"])
-        secondary_btn = DesignButton("Secondary Button", on_click=on_btn_click, variant="secondary", dark=state["dark_mode"], disabled=state["btn_disabled"])
-        outline_btn = DesignButton("Outline Button", on_click=on_btn_click, variant="outline", dark=state["dark_mode"], disabled=state["btn_disabled"])
-        text_btn = DesignButton("Text Button", on_click=on_btn_click, variant="text", dark=state["dark_mode"], disabled=state["btn_disabled"])
-        success_btn = DesignButton("Success Button", on_click=on_btn_click, variant="success", dark=state["dark_mode"], disabled=state["btn_disabled"], icon=ft.Icons.CHECK_CIRCLE)
-        warning_btn = DesignButton("Warning Button", on_click=on_btn_click, variant="warning", dark=state["dark_mode"], disabled=state["btn_disabled"], icon=ft.Icons.WARNING_ROUNDED)
-        danger_btn = DesignButton("Danger Button", on_click=on_btn_click, variant="danger", dark=state["dark_mode"], disabled=state["btn_disabled"], icon=ft.Icons.DELETE_ROUNDED)
+        primary_btn = DesignButton("Primary Button", on_click=on_btn_click, variant="primary",
+                                   dark=state["dark_mode"], disabled=state["btn_disabled"])
+        secondary_btn = DesignButton("Secondary Button", on_click=on_btn_click,
+                                     variant="secondary", dark=state["dark_mode"], disabled=state["btn_disabled"])
+        outline_btn = DesignButton("Outline Button", on_click=on_btn_click, variant="outline",
+                                   dark=state["dark_mode"], disabled=state["btn_disabled"])
+        text_btn = DesignButton("Text Button", on_click=on_btn_click, variant="text",
+                                dark=state["dark_mode"], disabled=state["btn_disabled"])
+        success_btn = DesignButton("Success Button", on_click=on_btn_click, variant="success",
+                                   dark=state["dark_mode"], disabled=state["btn_disabled"], icon=ft.Icons.CHECK_CIRCLE)
+        warning_btn = DesignButton("Warning Button", on_click=on_btn_click, variant="warning",
+                                   dark=state["dark_mode"], disabled=state["btn_disabled"], icon=ft.Icons.WARNING_ROUNDED)
+        danger_btn = DesignButton("Danger Button", on_click=on_btn_click, variant="danger",
+                                  dark=state["dark_mode"], disabled=state["btn_disabled"], icon=ft.Icons.DELETE_ROUNDED)
 
         btn_counter_text = ft.Text(f"Click count: {state['btn_click_count']}", weight="bold", color=c("text-primary"))
 
@@ -326,14 +336,15 @@ def main(page: ft.Page):
                         dark=state["dark_mode"],
                     ),
                     DesignSpacer("md"),
-                    
+
                     # Interactive Controller Container
                     DesignCard(
                         content=ft.Row(
                             [
                                 ft.Icon(ft.Icons.SETTINGS, color=c("primary")),
                                 ft.Text("Button Controls:", weight="bold", color=c("text-primary")),
-                                DesignCheckbox("Disable Buttons", value=state["btn_disabled"], dark=state["dark_mode"], on_change=toggle_btn_disabled),
+                                DesignCheckbox(
+                                    "Disable Buttons", value=state["btn_disabled"], dark=state["dark_mode"], on_change=toggle_btn_disabled),
                                 DesignSpacer("md", horizontal=True),
                                 btn_counter_text,
                             ],
@@ -464,7 +475,8 @@ def main(page: ft.Page):
                                         content=ft.Column(
                                             [
                                                 HeadingText("Surface Card", level=3, dark=state["dark_mode"]),
-                                                BodyText("Elevated box using white or grey-800 backdrop with subtle drop-shadows", size="sm", dark=state["dark_mode"]),
+                                                BodyText(
+                                                    "Elevated box using white or grey-800 backdrop with subtle drop-shadows", size="sm", dark=state["dark_mode"]),
                                             ],
                                             spacing=8,
                                         ),
@@ -476,7 +488,8 @@ def main(page: ft.Page):
                                         content=ft.Column(
                                             [
                                                 HeadingText("Variant Card", level=3, dark=state["dark_mode"]),
-                                                BodyText("Flat panel filled with variant color background, useful for nested layouts", size="sm", dark=state["dark_mode"]),
+                                                BodyText(
+                                                    "Flat panel filled with variant color background, useful for nested layouts", size="sm", dark=state["dark_mode"]),
                                             ],
                                             spacing=8,
                                         ),
@@ -488,7 +501,8 @@ def main(page: ft.Page):
                                         content=ft.Column(
                                             [
                                                 HeadingText("Outline Card", level=3, dark=state["dark_mode"]),
-                                                BodyText("Framed transparent box, elegant inside clear grid interfaces", size="sm", dark=state["dark_mode"]),
+                                                BodyText("Framed transparent box, elegant inside clear grid interfaces",
+                                                         size="sm", dark=state["dark_mode"]),
                                             ],
                                             spacing=8,
                                         ),
@@ -514,8 +528,10 @@ def main(page: ft.Page):
                                     DesignCard(
                                         content=ft.Column(
                                             [
-                                                ft.Row([ft.Icon(ft.Icons.LAUNCH, color=c("primary")), HeadingText("Click Me", level=3, dark=state["dark_mode"])]),
-                                                BodyText("Hover over this container to see state transformation and active elevation curves.", size="sm", dark=state["dark_mode"]),
+                                                ft.Row([ft.Icon(ft.Icons.LAUNCH, color=c("primary")),
+                                                       HeadingText("Click Me", level=3, dark=state["dark_mode"])]),
+                                                BodyText(
+                                                    "Hover over this container to see state transformation and active elevation curves.", size="sm", dark=state["dark_mode"]),
                                             ],
                                             spacing=8,
                                         ),
@@ -604,7 +620,8 @@ def main(page: ft.Page):
                             [
                                 ft.Icon(ft.Icons.BUG_REPORT, color=c("primary")),
                                 ft.Text("Simulate Input States:", weight="bold", color=c("text-primary")),
-                                DesignCheckbox("Trigger Field Error", value=bool(state["input_error"]), dark=state["dark_mode"], on_change=toggle_error),
+                                DesignCheckbox("Trigger Field Error", value=bool(
+                                    state["input_error"]), dark=state["dark_mode"], on_change=toggle_error),
                                 DesignSpacer("md", horizontal=True),
                                 live_label,
                             ],
@@ -708,7 +725,8 @@ def main(page: ft.Page):
                                     ft.Column(
                                         [
                                             ft.Text("Custom Switch Component", size=12, color=c("text-secondary")),
-                                            DesignSwitch("Enable Notification Audio", value=state["sw_value"], dark=state["dark_mode"], on_change=switch_changed),
+                                            DesignSwitch(
+                                                "Enable Notification Audio", value=state["sw_value"], dark=state["dark_mode"], on_change=switch_changed),
                                             switch_status,
                                         ],
                                         spacing=8,
@@ -718,7 +736,8 @@ def main(page: ft.Page):
                                     ft.Column(
                                         [
                                             ft.Text("Custom Checkbox Component", size=12, color=c("text-secondary")),
-                                            DesignCheckbox("Accept System Agreement", value=state["chk_value"], dark=state["dark_mode"], on_change=checkbox_changed),
+                                            DesignCheckbox(
+                                                "Accept System Agreement", value=state["chk_value"], dark=state["dark_mode"], on_change=checkbox_changed),
                                             checkbox_status,
                                         ],
                                         spacing=8,
@@ -782,7 +801,8 @@ def main(page: ft.Page):
                         controls=[
                             ft.Column(
                                 [
-                                    BodyText("Using DesignSection directly ensures headers and boundaries are perfectly placed.", dark=state["dark_mode"]),
+                                    BodyText(
+                                        "Using DesignSection directly ensures headers and boundaries are perfectly placed.", dark=state["dark_mode"]),
                                 ]
                             )
                         ],
@@ -796,16 +816,22 @@ def main(page: ft.Page):
                         controls=[
                             ft.Column(
                                 [
-                                    ft.Text("Below is a 12px ('md') spacer separating two colored blocks:", size=11, color=c("text-secondary")),
-                                    ft.Container(bgcolor=c("primary-container"), height=25, alignment=ft.Alignment.CENTER, content=ft.Text("Block A", color=c("primary"))),
+                                    ft.Text("Below is a 12px ('md') spacer separating two colored blocks:",
+                                            size=11, color=c("text-secondary")),
+                                    ft.Container(bgcolor=c("primary-container"), height=25,
+                                                 alignment=ft.Alignment.CENTER, content=ft.Text("Block A", color=c("primary"))),
                                     DesignSpacer("md"),
-                                    ft.Container(bgcolor=c("primary-container"), height=25, alignment=ft.Alignment.CENTER, content=ft.Text("Block B", color=c("primary"))),
-                                    
+                                    ft.Container(bgcolor=c("primary-container"), height=25,
+                                                 alignment=ft.Alignment.CENTER, content=ft.Text("Block B", color=c("primary"))),
+
                                     DesignSpacer("lg"),
-                                    ft.Text("Below is a 32px ('xxl') spacer separating two colored blocks:", size=11, color=c("text-secondary")),
-                                    ft.Container(bgcolor=c("primary-container"), height=25, alignment=ft.Alignment.CENTER, content=ft.Text("Block C", color=c("primary"))),
+                                    ft.Text("Below is a 32px ('xxl') spacer separating two colored blocks:",
+                                            size=11, color=c("text-secondary")),
+                                    ft.Container(bgcolor=c("primary-container"), height=25,
+                                                 alignment=ft.Alignment.CENTER, content=ft.Text("Block C", color=c("primary"))),
                                     DesignSpacer("xxl"),
-                                    ft.Container(bgcolor=c("primary-container"), height=25, alignment=ft.Alignment.CENTER, content=ft.Text("Block D", color=c("primary"))),
+                                    ft.Container(bgcolor=c("primary-container"), height=25,
+                                                 alignment=ft.Alignment.CENTER, content=ft.Text("Block D", color=c("primary"))),
                                 ]
                             )
                         ],
@@ -852,7 +878,7 @@ def main(page: ft.Page):
 
     def navigate_to(tab_name: str):
         state["active_tab"] = tab_name
-        
+
         # Highlight sidebar list item
         for item in sidebar_menu.controls:
             is_active = item.data == tab_name
@@ -877,7 +903,7 @@ def main(page: ft.Page):
             content_area.content = build_toggles_view()
         elif tab_name == "layouts":
             content_area.content = build_layouts_view()
-            
+
         content_area.update()
 
     # Rebuild navigation sidebar and layout on theme change
@@ -889,7 +915,7 @@ def main(page: ft.Page):
         top_banner.content.controls[0].controls[1].color = c("text-primary")
         top_banner.content.controls[1].icon_color = c("primary")
         top_banner.update()
-        
+
         # Update sidebar container colors
         sidebar_col.bgcolor = c("surface")
         sidebar_col.border = ft.Border.only(right=ft.BorderSide(1, c("border")))
@@ -898,12 +924,12 @@ def main(page: ft.Page):
     def handle_theme_toggle(e):
         state["dark_mode"] = not state["dark_mode"]
         page.theme_mode = ft.ThemeMode.DARK if state["dark_mode"] else ft.ThemeMode.LIGHT
-        
+
         # Toggle icon
         theme_btn.icon = ft.Icons.LIGHT_MODE_ROUNDED if state["dark_mode"] else ft.Icons.DARK_MODE_ROUNDED
         theme_btn.tooltip = "Switch to Light Mode" if state["dark_mode"] else "Switch to Dark Mode"
         theme_btn.update()
-        
+
         # Update page and rebuild
         update_theme_background()
         rebuild_nav_and_views()
@@ -915,7 +941,8 @@ def main(page: ft.Page):
             content=ft.Row(
                 [
                     ft.Icon(icon, color=c("primary") if is_active else c("text-secondary"), size=18),
-                    ft.Text(label, color=c("primary") if is_active else c("text-primary"), size=13, weight=ft.FontWeight.W_600 if is_active else ft.FontWeight.NORMAL),
+                    ft.Text(label, color=c("primary") if is_active else c("text-primary"), size=13,
+                            weight=ft.FontWeight.W_600 if is_active else ft.FontWeight.NORMAL),
                 ],
                 spacing=12,
             ),
@@ -1024,6 +1051,7 @@ def main(page: ft.Page):
     )
 
     page.add(main_layout)
+
 
 if __name__ == "__main__":
     ft.app(target=main, view=ft.AppView.WEB_BROWSER, port=8550)

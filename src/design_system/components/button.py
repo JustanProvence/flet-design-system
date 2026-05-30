@@ -8,6 +8,7 @@ reusable, state-aware button responding dynamically to hover and active states.
 import flet as ft
 from design_system.tokens.manager import tokens
 
+
 class DesignButton(ft.Container):
     """
     State-aware, token-driven Custom Button component.
@@ -50,10 +51,10 @@ class DesignButton(ft.Container):
         self.icon_data = icon
         self.btn_width = width
         self.btn_height = height
-        
+
         # Configure colors based on variant and dark mode
         self._set_colors()
-        
+
         # Setup content (Row with text and optional icon)
         content_items = []
         if self.icon_data:
@@ -73,7 +74,7 @@ class DesignButton(ft.Container):
                 font_family=tokens.get_font_family("body")
             )
         )
-        
+
         super().__init__(
             content=ft.Row(
                 content_items,
@@ -96,53 +97,53 @@ class DesignButton(ft.Container):
         )
 
     def _set_colors(self):
-        """
-        Internal utility mapping button tokens based on the current theme and variant.
-        """
+        """Internal utility mapping button tokens based on the current theme and variant."""
         # Default states
         self.border_style = None
-        
+
         if self.variant == "primary":
             self.bg_color = tokens.get_color("primary", self.dark)
             self.hover_bg_color = tokens.get_color("primary-hover", self.dark)
             self.fg_color = tokens.get_color("text-on-primary", self.dark)
-            
+
         elif self.variant == "secondary":
             self.bg_color = tokens.get_color("surface-variant", self.dark)
             # Hover is slightly darker/lighter depending on mode
             self.hover_bg_color = tokens.get_color("border", self.dark)
             self.fg_color = tokens.get_color("text-primary", self.dark)
-            
+
         elif self.variant == "outline":
             self.bg_color = "transparent"
             self.hover_bg_color = tokens.get_color("surface-variant", self.dark)
             self.fg_color = tokens.get_color("primary", self.dark)
             self.border_style = ft.Border.all(1, tokens.get_color("border", self.dark))
-            
+
         elif self.variant == "text":
             self.bg_color = "transparent"
             self.hover_bg_color = tokens.get_color("surface-variant", self.dark)
             self.fg_color = tokens.get_color("primary", self.dark)
-            
+
         elif self.variant == "success":
             self.bg_color = tokens.get_color("success", self.dark)
-            self.hover_bg_color = tokens.get_color_primitive("emerald-500") if self.dark else tokens.get_color_primitive("emerald-600")
+            self.hover_bg_color = tokens.get_color_primitive(
+                "emerald-500") if self.dark else tokens.get_color_primitive("emerald-600")
             self.fg_color = tokens.get_color_primitive("white")
-            
+
         elif self.variant == "warning":
             self.bg_color = tokens.get_color("warning", self.dark)
-            self.hover_bg_color = tokens.get_color_primitive("amber-500") if self.dark else tokens.get_color_primitive("amber-600")
-            self.fg_color = tokens.get_color_primitive("white") if not self.dark else tokens.get_color_primitive("black")
-            
+            self.hover_bg_color = tokens.get_color_primitive(
+                "amber-500") if self.dark else tokens.get_color_primitive("amber-600")
+            self.fg_color = tokens.get_color_primitive(
+                "white") if not self.dark else tokens.get_color_primitive("black")
+
         elif self.variant == "danger":
             self.bg_color = tokens.get_color("danger", self.dark)
-            self.hover_bg_color = tokens.get_color_primitive("rose-500") if self.dark else tokens.get_color_primitive("rose-600")
+            self.hover_bg_color = tokens.get_color_primitive(
+                "rose-500") if self.dark else tokens.get_color_primitive("rose-600")
             self.fg_color = tokens.get_color_primitive("white")
 
     def _handle_hover(self, e):
-        """
-        Internal event handler managing hover color transitions dynamically.
-        """
+        """Internal event handler managing hover color transitions dynamically."""
         if e.data == "true":
             self.bgcolor = self.hover_bg_color
             if self.variant == "outline":
@@ -154,12 +155,10 @@ class DesignButton(ft.Container):
         self.update()
 
     def _handle_click(self, e):
-        """
-        Internal click callback forwarder.
-        """
+        """Internal click callback forwarder."""
         if self.click_handler:
             self.click_handler(e)
-            
+
     def set_disabled(self, disabled: bool):
         """
         Updates the button disabled state, opacity, and event handlers.

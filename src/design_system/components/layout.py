@@ -8,6 +8,7 @@ and DesignSpacer (for standardized horizontal and vertical layout gaps).
 import flet as ft
 from design_system.tokens.manager import tokens
 
+
 class DesignSection(ft.Column):
     """
     Token-driven Custom Layout Section Component.
@@ -38,7 +39,7 @@ class DesignSection(ft.Column):
                 Defaults to 'md'.
         """
         self.dark = dark
-        
+
         # Build section header
         header_controls = [
             ft.Text(
@@ -49,7 +50,7 @@ class DesignSection(ft.Column):
                 font_family=tokens.get_font_family("heading"),
             )
         ]
-        
+
         if subtitle:
             header_controls.append(
                 ft.Text(
@@ -59,18 +60,18 @@ class DesignSection(ft.Column):
                     font_family=tokens.get_font_family("body"),
                 )
             )
-            
+
         header = ft.Column(
             header_controls,
             spacing=tokens.get_spacing("xs"),
         )
-        
+
         # Merge section header with content controls
         all_controls = [
             header,
             ft.Divider(height=1, color=tokens.get_color("border", self.dark)),
         ]
-        
+
         if controls:
             all_controls.append(
                 ft.Column(
@@ -78,7 +79,7 @@ class DesignSection(ft.Column):
                     spacing=tokens.get_spacing(spacing_token),
                 )
             )
-            
+
         super().__init__(
             controls=all_controls,
             spacing=tokens.get_spacing("md"),

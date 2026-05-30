@@ -8,6 +8,7 @@ colors and text styles for toggle controls.
 import flet as ft
 from design_system.tokens.manager import tokens
 
+
 class DesignSwitch(ft.Switch):
     """
     Token-driven Custom Switch Component.
@@ -21,7 +22,7 @@ class DesignSwitch(ft.Switch):
         label: str = None,
         value: bool = False,
         dark: bool = False,
-        on_change = None,
+        on_change=None,
         **kwargs
     ):
         """
@@ -34,7 +35,7 @@ class DesignSwitch(ft.Switch):
             on_change (function, optional): State change callback handler. Defaults to None.
         """
         self.dark = dark
-        
+
         # Color resolution
         active_color = tokens.get_color("primary", self.dark)
         active_track_color = tokens.get_color("primary-container", self.dark)
@@ -71,7 +72,7 @@ class DesignCheckbox(ft.Checkbox):
         label: str = None,
         value: bool = False,
         dark: bool = False,
-        on_change = None,
+        on_change=None,
         **kwargs
     ):
         """
@@ -84,10 +85,9 @@ class DesignCheckbox(ft.Checkbox):
             on_change (function, optional): State change callback handler. Defaults to None.
         """
         self.dark = dark
-        
+
         active_color = tokens.get_color("primary", self.dark)
         text_color = tokens.get_color("text-primary", self.dark)
-        border_color = tokens.get_color("border", self.dark)
 
         super().__init__(
             label=label,

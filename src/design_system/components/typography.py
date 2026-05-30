@@ -8,6 +8,7 @@ SubheadingText, BodyText, CaptionText, and MonospaceText components.
 import flet as ft
 from design_system.tokens.manager import tokens
 
+
 class BaseText(ft.Text):
     """
     Base token-aware text class extending ft.Text.
@@ -50,10 +51,9 @@ class BaseText(ft.Text):
             **kwargs
         )
 
+
 class DisplayText(BaseText):
-    """
-    Display-sized big text for banners or page heroes.
-    """
+    """Display-sized big text for banners or page heroes."""
 
     def __init__(self, value: str, color_token: str = "text-primary", dark: bool = False, **kwargs):
         """
@@ -74,10 +74,9 @@ class DisplayText(BaseText):
             **kwargs
         )
 
+
 class HeadingText(BaseText):
-    """
-    Heading text component supporting multiple logical level weights (H1, H2, H3).
-    """
+    """Heading text component supporting multiple logical level weights (H1, H2, H3)."""
 
     def __init__(self, value: str, level: int = 1, color_token: str = "text-primary", dark: bool = False, **kwargs):
         """
@@ -102,10 +101,9 @@ class HeadingText(BaseText):
             **kwargs
         )
 
+
 class SubheadingText(BaseText):
-    """
-    Medium-weight heading text, ideal for section or subtitle descriptors.
-    """
+    """Medium-weight heading text, ideal for section or subtitle descriptors."""
 
     def __init__(self, value: str, color_token: str = "text-secondary", dark: bool = False, **kwargs):
         """
@@ -126,10 +124,9 @@ class SubheadingText(BaseText):
             **kwargs
         )
 
+
 class BodyText(BaseText):
-    """
-    Standard copy and paragraph text block.
-    """
+    """Standard copy and paragraph text block."""
 
     def __init__(self, value: str, size: str = "md", color_token: str = "text-primary", dark: bool = False, **kwargs):
         """
@@ -152,10 +149,9 @@ class BodyText(BaseText):
             **kwargs
         )
 
+
 class CaptionText(BaseText):
-    """
-    Extra-small text block ideal for auxiliary data, footers, or sub-labels.
-    """
+    """Extra-small text block ideal for auxiliary data, footers, or sub-labels."""
 
     def __init__(self, value: str, color_token: str = "text-secondary", dark: bool = False, **kwargs):
         """
@@ -176,10 +172,9 @@ class CaptionText(BaseText):
             **kwargs
         )
 
+
 class MonospaceText(BaseText):
-    """
-    Code-aligned, monospace-family text block, perfect for syntax blocks.
-    """
+    """Code-aligned, monospace-family text block, perfect for syntax blocks."""
 
     def __init__(self, value: str, color_token: str = "text-secondary", dark: bool = False, **kwargs):
         """

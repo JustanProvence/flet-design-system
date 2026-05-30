@@ -8,6 +8,7 @@ with custom borders, paddings, shadows, and lift-on-hover interaction capabiliti
 import flet as ft
 from design_system.tokens.manager import tokens
 
+
 class DesignCard(ft.Container):
     """
     Token-driven Custom Container Card Component.
@@ -24,7 +25,7 @@ class DesignCard(ft.Container):
         padding_token: str = "lg",
         radius_token: str = "md",
         interactive: bool = False,
-        on_click = None,
+        on_click=None,
         **kwargs
     ):
         """
@@ -46,10 +47,10 @@ class DesignCard(ft.Container):
         self.variant = variant
         self.interactive = interactive
         self.click_handler = on_click
-        
+
         # Determine background and border
         self._set_styles()
-        
+
         # Elevation/Shadow config
         shadow_style = None
         if not interactive and variant == "surface":
@@ -75,9 +76,7 @@ class DesignCard(ft.Container):
         )
 
     def _set_styles(self):
-        """
-        Internal style binder setting card background, hover offsets, and border.
-        """
+        """Internal style binder setting card background, hover offsets, and border."""
         if self.variant == "surface":
             self.bg_color = tokens.get_color("surface", self.dark)
             self.border_style = None
@@ -92,9 +91,7 @@ class DesignCard(ft.Container):
             self.hover_bg_color = tokens.get_color("surface-variant", self.dark)
 
     def _handle_hover(self, e):
-        """
-        Internal hover event handler providing smooth lift shadows.
-        """
+        """Internal hover event handler providing smooth lift shadows."""
         if e.data == "true":
             self.bgcolor = self.hover_bg_color
             self.shadow = ft.BoxShadow(
@@ -109,8 +106,6 @@ class DesignCard(ft.Container):
         self.update()
 
     def _handle_click(self, e):
-        """
-        Internal click forwarder callback.
-        """
+        """Internal click forwarder callback."""
         if self.click_handler:
             self.click_handler(e)
