@@ -3,7 +3,10 @@ name = "flet-design-system"
 version = "0.1.0"
 description = "A comprehensive, token-driven Design System built with Flet and Python"
 authors = ["OpenCode <prov@opencode.dev>"]
-packages = [{include = "design_system", from = "src"}]
+packages = [
+    {include = "design_system", from = "src"},
+    {include = "responsive_app_example"}
+]
 
 [tool.poetry.dependencies]
 python = "^3.10"
@@ -35,4 +38,5 @@ build-backend = "poetry.core.masonry.api"
 
 [tool.poetry.scripts]
 design-system = "design_system.main:run_app"
+design-system-example = "responsive_app_example.main_flet:run_app"
 design-system-bot = "design_system.bot.client:start_bot"

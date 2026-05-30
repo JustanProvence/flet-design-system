@@ -294,5 +294,9 @@ def main(page: ft.Page):
     page.add(app_layout)
 
 
-if __name__ == "__main__":
+def run_app():
     ft.app(target=main, view=ft.AppView.WEB_BROWSER, host="0.0.0.0", port=8551)
+
+
+if __name__ == "__main__":
+    run_app()

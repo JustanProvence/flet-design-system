@@ -84,7 +84,11 @@ poetry run python src/design_system/main.py
 ```
 
 ### 📱 Start the Responsive Application Example
-You can launch the responsive application example on port `8551`:
+You can launch the responsive application example on port `8551` using the Poetry script command:
+```bash
+poetry run design-system-example
+```
+Or directly using python:
 ```bash
 poetry run python responsive_app_example/main_flet.py
 ```
